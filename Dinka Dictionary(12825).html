@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thuɔŋjäŋ (Dinka) Dictionary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .dinka-char {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen p-4 md:p-8">
+
+    <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-blue-800 mb-2">Thuɔŋjäŋ Dictionary</h1>
+            <p class="text-gray-600">English to Dinka Translation & Reference</p>
+        </header>
+
+        <!-- Search and Keyboard Section -->
+        <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+            <div class="mb-4">
+                <input type="text" id="searchInput" placeholder="Search in Dinka or English (e.g., 'water' or 'piu')..." 
+                       class="w-full p-4 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <!-- Virtual Keyboard for Special Characters -->
+            <div class="bg-gray-100 p-3 rounded-lg flex flex-wrap gap-2 justify-center" id="keyboard">
+                <span class="text-sm text-gray-500 w-full text-center block mb-1">Dinka Characters</span>
+                <button class="bg-white px-4 py-2 rounded shadow hover:bg-blue-50 text-xl font-medium" onclick="insertChar('ɛ')">ɛ</button>
+                <button class="bg-white px-4 py-2 rounded shadow hover:bg-blue-50 text-xl font-medium" onclick="insertChar('ɔ')">ɔ</button>
+                <button class="bg-white px-4 py-2 rounded shadow hover:bg-blue-50 text-xl font-medium" onclick="insertChar('ɣ')">ɣ</button>
+                <button class="bg-white px-4 py-2 rounded shadow hover:bg-blue-50 text-xl font-medium" onclick="insertChar('ŋ')">ŋ</button>
+                <button class="bg-white px-4 py-2 rounded shadow hover:bg-blue-50 text-xl font-medium" onclick="insertChar('ë')">ë</button>
+                <button class="bg-white px-4 py-2 rounded shadow hover:bg-blue-50 text-xl font-medium" onclick="insertChar('ï')">ï</button>
+                <button class="bg-white px-4 py-2 rounded shadow hover:bg-blue-50 text-xl font-medium" onclick="insertChar('ä')">ä</button>
+                <button class="bg-white px-4 py-2 rounded shadow hover:bg-blue-50 text-xl font-medium" onclick="insertChar('ö')">ö</button>
+            </div>
+        </div>
+
+        <!-- Dictionary Results -->
+        <div id="dictionaryList" class="space-y-4">
+            <!-- JavaScript will inject dictionary entries here -->
+        </div>
+    </div>
+
+    <script>
+        // Expanded Dictionary Database
+        const dictionaryData = [
+            // People & Pronouns
+            { dinka: "Kɔc", english: "People", type: "noun" },
+            { dinka: "Raam", english: "Person", type: "noun" },
+            { dinka: "Moc", english: "Man", type: "noun" },
+            { dinka: "Tik", english: "Woman", type: "noun" },
+            { dinka: "Meth", english: "Child", type: "noun" },
+            { dinka: "Diäär", english: "Women", type: "noun" },
+            { dinka: "Ɣɛn", english: "I / Me", type: "pronoun" },
+            { dinka: "Yïn", english: "You", type: "pronoun" },
+            { dinka: "Yen", english: "He / She / It", type: "pronoun" },
+            { dinka: "Wok", english: "We", type: "pronoun" },
+            
+            // Family
+            { dinka: "Wä", english: "Father", type: "noun" },
+            { dinka: "Ma", english: "Mother", type: "noun" },
+            { dinka: "Wämaan", english: "Brother", type: "noun" },
+            { dinka: "Nyankäy", english: "Sister", type: "noun" },
+            
+            // Nature & Environment
+            { dinka: "Pïu", english: "Water", type: "noun", example: "Yen abi pïu dek. (He will drink water.)" },
+            { dinka: "Mac", english: "Fire", type: "noun" },
+            { dinka: "Aköl", english: "Sun", type: "noun" },
+            { dinka: "Pɛi", english: "Moon / Month", type: "noun" },
+            { dinka: "Tiim", english: "Tree / Wood", type: "noun" },
+            { dinka: "Wal", english: "Grass / Medicine", type: "noun" },
+            { dinka: "Piny", english: "Earth / Ground", type: "noun" },
+            { dinka: "Pial", english: "Health", type: "noun" },
+            { dinka: "Nhial", english: "Sky / Up", type: "noun" },
+
+            // Animals
+            { dinka: "Lääi", english: "Animals (Wild)", type: "noun" },
+            { dinka: "Wëŋ", english: "Cow", type: "noun" },
+            { dinka: "Macar", english: "Black Bull", type: "noun" },
+            { dinka: "Mabior", english: "White Bull", type: "noun" },
+            { dinka: "Jɔk", english: "Dog", type: "noun" },
+            { dinka: "Dït", english: "Bird", type: "noun" },
+            { dinka: "Rɛc", english: "Fish", type: "noun" },
+
+            // Actions & Verbs
+            { dinka: "Cam", english: "Eat", type: "verb", example: "Ɣɛn abi mïth cam. (I will eat food.)" },
+            { dinka: "Dek", english: "Drink", type: "verb" },
+            { dinka: "Cath", english: "Walk", type: "verb" },
+            { dinka: "Tïŋ", english: "See", type: "verb" },
+            { dinka: "Piŋ", english: "Hear / Listen", type: "verb" },
+            { dinka: "Lueel", english: "Say / Tell", type: "verb" },
+            { dinka: "Nyic", english: "Know", type: "verb" },
+            { dinka: "Cɔl", english: "Call", type: "verb" },
+            { dinka: "Bɛ̈n", english: "Come", type: "verb" },
+            { dinka: "Lɔ", english: "Go", type: "verb" },
+            { dinka: "Rëër", english: "Stay / Sit", type: "verb" },
+            { dinka: "Tɔ̈", english: "Is / Are (Location)", type: "verb" },
+
+            // Common Adjectives & Descriptors
+            { dinka: "Dit", english: "Big", type: "adjective" },
+            { dinka: "Kor", english: "Small", type: "adjective" },
+            { dinka: "Path", english: "Good / Fine", type: "adjective", example: "Apath. (It is good.)" },
+            { dinka: "Rac", english: "Bad", type: "adjective" },
+            { dinka: "Col", english: "Black", type: "adjective" },
+            { dinka: "Thith", english: "Red", type: "adjective" },
+            { dinka: "Yar", english: "White", type: "adjective" },
+            
+            // Greetings & Phrases
+            { dinka: "Cï bäk", english: "Welcome", type: "phrase" },
+            { dinka: "Yïn a ca lɛc", english: "Thank you", type: "phrase" },
+            { dinka: "Cï yi bak", english: "Good morning", type: "phrase" },
+            { dinka: "Këc", english: "Not yet", type: "phrase" }
+        ];
+
+        // Sort data alphabetically by Dinka word
+        dictionaryData.sort((a, b) => a.dinka.localeCompare(b.dinka));
+
+        const searchInput = document.getElementById('searchInput');
+        const dictionaryList = document.getElementById('dictionaryList');
+
+        // Function to assign colors based on word type
+        function getTypeColor(type) {
+            switch(type) {
+                case 'noun': return 'bg-blue-100 text-blue-800';
+                case 'verb': return 'bg-green-100 text-green-800';
+                case 'adjective': return 'bg-purple-100 text-purple-800';
+                case 'pronoun': return 'bg-yellow-100 text-yellow-800';
+                case 'phrase': return 'bg-rose-100 text-rose-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        // Normalization function to make searching easier (e.g., 'o' matches 'ɔ')
+        function normalizeString(str) {
+            return str.toLowerCase()
+                .replace(/[ɔö]/g, 'o')
+                .replace(/[ɛë]/g, 'e')
+                .replace(/[ɣ]/g, 'y') // approximation for typing
+                .replace(/[ŋ]/g, 'n') // approximation for typing
+                .replace(/[ï]/g, 'i')
+                .replace(/[ä]/g, 'a');
+        }
+
+        // Function to render the list
+        function renderDictionary(filterText = '') {
+            dictionaryList.innerHTML = '';
+            
+            const normalizedFilter = normalizeString(filterText);
+
+            const filteredData = dictionaryData.filter(entry => {
+                const normalizedDinka = normalizeString(entry.dinka);
+                const normalizedEnglish = normalizeString(entry.english);
+                return normalizedDinka.includes(normalizedFilter) || normalizedEnglish.includes(normalizedFilter);
+            });
+
+            if (filteredData.length === 0) {
+                dictionaryList.innerHTML = `<div class="p-6 text-center text-gray-500 bg-white rounded-xl shadow-sm">No words found for "${filterText}". Time to add it to your database!</div>`;
+                return;
+            }
+
+            filteredData.forEach(entry => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow';
+                
+                let exampleHtml = '';
+                if (entry.example) {
+                    exampleHtml = `<div class="mt-3 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                    <span class="font-semibold">Example:</span> ${entry.example}
+                                   </div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 dinka-char">${entry.dinka}</h2>
+                            <p class="text-lg text-gray-700 mt-1">${entry.english}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${getTypeColor(entry.type)}">
+                            ${entry.type}
+                        </span>
+                    </div>
+                    ${exampleHtml}
+                `;
+                dictionaryList.appendChild(card);
+            });
+        }
+
+        // Virtual Keyboard Function
+        function insertChar(char) {
+            const startPos = searchInput.selectionStart;
+            const endPos = searchInput.selectionEnd;
+            searchInput.value = searchInput.value.substring(0, startPos) + char + searchInput.value.substring(endPos, searchInput.value.length);
+            searchInput.focus();
+            searchInput.selectionStart = startPos + 1;
+            searchInput.selectionEnd = startPos + 1;
+            renderDictionary(searchInput.value);
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', (e) => {
+            renderDictionary(e.target.value);
+        });
+
+        // Initial Render
+        renderDictionary();
+    </script>
+</body>
+</html>
